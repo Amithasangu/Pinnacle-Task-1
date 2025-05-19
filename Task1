@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Analyzer</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Password Analyzer</h1>
+    <input type="password" id="passwordInput" placeholder="Enter your password" />
+    <button onclick="analyzePassword()">Analyze</button>
+    <div id="result"></div>
+    <div id="recommendations"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+  width: 400px;
+  text-align: center;
+}
+
+input {
+  padding: 10px;
+  width: 90%;
+  font-size: 16px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+#error, #result {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+#recommendations {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #444;
+  text-align: left;
+}
+
+.error {
+  color: red;
+}
+
+function analyzePassword() {
+  const password = document.getElementById("passwordInput").value;
+  const result = document.getElementById("result");
+  const recommendations = document.getElementById("recommendations");
+
+  let strength = 0;
+  let messages = [];
+
+  if (password.length >= 8) strength++;
+  else messages.push("Use at least 8 characters.");
+
+  if (/[A-Z]/.test(password)) strength++;
+  else messages.push("Include at least one uppercase letter.");
+
+  if (/[a-z]/.test(password)) strength++;
+  else messages.push("Include at least one lowercase letter.");
+
+  if (/[0-9]/.test(password)) strength++;
+  else messages.push("Include at least one number.");
+
+  if (/[\W_]/.test(password)) strength++;
+  else messages.push("Include at least one special character.");
+
+  let strengthMsg = "";
+  if (strength <= 2) strengthMsg = "Password is Weak ❌";
+  else if (strength === 3 || strength === 4) strengthMsg = "Password is Moderate ⚠️";
+  else strengthMsg = "Password is Strong ✅";
+
+  result.innerText = strengthMsg;
+
+  if (strength < 5) {
+    recommendations.innerHTML = <strong>Suggestions:</strong><ul>${messages.map(m => <li>${m}</li>).join('')}</ul>;
+  } else {
+    recommendations.innerHTML = "<strong>Your password is secure.</strong>";
+  }
+}
